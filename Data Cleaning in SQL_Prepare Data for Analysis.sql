@@ -1,0 +1,30 @@
+--- DETECT AND REMOVE DUPLICATES --- 
+
+WITH CTE1 AS(
+SELECT CustomerID, ShipName, ShipAddress, ShipPostalCode, ShipCountry,
+ROW_NUMBER() OVER (PARTITION BY CustomerID ORDER BY CustomerID) AS RN
+FROM Orders )
+
+SELECT* FROM CTE1
+WHERE RN =1
+
+
+--- CLEAN DATA WITH CASE STATEMENT ---
+
+SELECT MIN(Freight), MAX (Freight)
+FROM Orders
+
+SELECT Freight,
+CASE WHEN Freight BETWEEN 0 AND 50 THEN 'LOW CHARGE' 
+     WHEN Freight BETWEEN 50 AND 200 THEN 'MEDIUM CHARGE'
+	 WHEN Freight >200 THEN 'HIGH CHARGE'
+	 ELSE 'NO CHARGE'
+	 END AS CHARGE  --- ALIAS NAME TO GIVE COLUMN NAME 
+FROM Orders
+
+
+--- DEALING WITH NULL VALUES IN SQL ---
+
+SELECT CustomerID, ContactName, City, 
+ISNULL(Region,'No Region') AS Region
+FROM Customers
